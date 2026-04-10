@@ -1,0 +1,30 @@
+{
+  "name": "workhorse",
+  "owner": {
+    "name": "Daniel Hopper"
+  },
+  "metadata": {
+    "description": "Workspace automation — worktree lifecycle, formatting, and git workflow enforcement"
+  },
+  "plugins": [
+    {
+      "name": "workhorse",
+      "source": "./",
+      "description": "Worktree file copying, auto-formatting, git guards, branch cleanup",
+      "author": {
+        "name": "Daniel Hopper"
+      },
+      "homepage": "https://github.com/hopperd/workhorse",
+      "repository": "https://github.com/hopperd/workhorse",
+      "license": "MIT",
+      "keywords": [
+        "worktree",
+        "formatting",
+        "git",
+        "hooks",
+        "workflow"
+      ],
+      "category": "workflow"
+    }
+  ]
+}

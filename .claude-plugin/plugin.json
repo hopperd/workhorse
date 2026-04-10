@@ -1,0 +1,21 @@
+{
+  "name": "workhorse",
+  "description": "Workspace automation — worktree lifecycle, formatting, and git workflow enforcement",
+  "version": "0.1.0",
+  "author": {
+    "name": "Daniel Hopper"
+  },
+  "homepage": "https://github.com/hopperd/workhorse",
+  "repository": "https://github.com/hopperd/workhorse",
+  "license": "MIT",
+  "keywords": [
+    "worktree",
+    "formatting",
+    "git",
+    "hooks",
+    "workflow",
+    "automation"
+  ],
+  "skills": "./skills",
+  "commands": "./commands"
+}
