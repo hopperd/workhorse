@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
-# PreToolUse hook (Write|Edit): block file edits on protected branches when
-# requireWorktree is enabled. Catches agents BEFORE they write code, not after.
+# PreToolUse hook (Write|Edit): warn when editing files on protected branches
+# without a worktree. Warns but does NOT block — agents should course-correct,
+# humans can ignore safely.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/util.sh"
@@ -45,7 +46,7 @@ protected="$(echo "$CONFIG" | jq -r '.git.protectedBranches // ["main","master"]
 while IFS= read -r branch; do
   [[ -z "$branch" ]] && continue
   if [[ "$current_branch" == "$branch" ]]; then
-    wh_block "STOP — you are editing files directly on '$current_branch' without a worktree. You MUST use a worktree before making changes. Use the EnterWorktree tool or dispatch agents with isolation:'worktree'. Do NOT continue editing files on this branch."
+    wh_log "WARNING: You are editing files on '$current_branch' without a worktree. If you are an agent doing implementation work, STOP and use EnterWorktree or isolation:'worktree' before continuing."
     exit 0
   fi
 done <<< "$protected"
