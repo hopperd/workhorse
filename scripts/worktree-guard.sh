@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# PreToolUse hook (Write|Edit): warn when editing files on protected branches
-# without a worktree. Warns but does NOT block — agents should course-correct,
-# humans can ignore safely.
+# PreToolUse hook (Write|Edit): require confirmation when editing files on
+# protected branches without a worktree. Uses permissionDecision:"ask" so
+# humans can approve, but unattended agents get blocked.
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/util.sh"
@@ -46,7 +46,9 @@ protected="$(echo "$CONFIG" | jq -r '.git.protectedBranches // ["main","master"]
 while IFS= read -r branch; do
   [[ -z "$branch" ]] && continue
   if [[ "$current_branch" == "$branch" ]]; then
-    wh_log "WARNING: You are editing files on '$current_branch' without a worktree. If you are an agent doing implementation work, STOP and use EnterWorktree or isolation:'worktree' before continuing."
+    cat <<'HOOKJSON'
+{"hookSpecificOutput":{"hookEventName":"PreToolUse","permissionDecision":"ask","permissionDecisionReason":"Editing files on a protected branch without a worktree. If you are an agent, use EnterWorktree or isolation:'worktree' instead."}}
+HOOKJSON
     exit 0
   fi
 done <<< "$protected"
