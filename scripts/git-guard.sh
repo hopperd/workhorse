@@ -47,14 +47,18 @@ if [[ "$CMD" =~ git[[:space:]]+commit ]]; then
   is_commit=true
 fi
 
-# Only flag branch-level destructive operations, not file-level restores
-# git checkout <branch> = destructive (switching branches with uncommitted changes)
-# git checkout HEAD -- <file> = safe (restoring a specific file)
-# git checkout -- <file> = safe (restoring a specific file)
-# git restore <file> = safe (restoring a specific file)
-# git stash = destructive (hides uncommitted changes)
-# git reset --hard = destructive (discards changes)
-if [[ "$CMD" =~ git[[:space:]]+stash ]] || [[ "$CMD" =~ git[[:space:]]+reset[[:space:]]+--hard ]]; then
+# Only flag operations that can LOSE uncommitted changes:
+# git reset --hard = destructive (discards all changes)
+# git checkout <branch> = destructive (switching branches may lose changes)
+#
+# These are SAFE and should not be blocked:
+# git checkout HEAD -- <file> = file restore (targeted, intentional)
+# git checkout -- <file> = file restore
+# git restore <file> = file restore
+# git stash = SAVES changes (doesn't lose them)
+# git reset HEAD = unstaging (doesn't discard changes)
+# git reset (without --hard) = unstaging
+if [[ "$CMD" =~ git[[:space:]]+reset[[:space:]]+--hard ]]; then
   is_destructive=true
 elif [[ "$CMD" =~ git[[:space:]]+checkout ]] && [[ ! "$CMD" =~ --[[:space:]] ]] && [[ ! "$CMD" =~ git[[:space:]]+checkout[[:space:]]+(HEAD|FETCH_HEAD|ORIG_HEAD) ]]; then
   # checkout without -- is a branch switch (destructive)
