@@ -18,6 +18,11 @@ if [[ ! "$CMD" =~ ^git[[:space:]] ]]; then
   exit 0
 fi
 
+# Bypass: skip all checks if command contains "# workhorse:skip"
+if [[ "$CMD" =~ \#[[:space:]]*workhorse:skip ]]; then
+  exit 0
+fi
+
 # Load config once
 CONFIG="$(wh_read_config)"
 
