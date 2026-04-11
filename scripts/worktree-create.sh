@@ -33,7 +33,11 @@ done < <(wh_get_config_array '.worktree.copyFiles')
 # Build pattern list: config patterns or defaults
 config_patterns="$(wh_read_config | jq -r '.worktree.copyPatterns // empty')"
 if [[ -n "$config_patterns" && "$config_patterns" != "null" ]]; then
-  mapfile -t patterns < <(echo "$config_patterns" | jq -r '.[]' 2>/dev/null)
+  patterns=()
+  while IFS= read -r p; do
+    [[ -n "$p" ]] && patterns+=("$p")
+  done < <(echo "$config_patterns" | jq -r '.[]' 2>/dev/null)
+  [[ ${#patterns[@]} -eq 0 ]] && patterns=("${DEFAULT_PATTERNS[@]}")
 else
   patterns=("${DEFAULT_PATTERNS[@]}")
 fi

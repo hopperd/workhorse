@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Workhorse shared utilities — sourced by all scripts
 
-set -euo pipefail
+set -uo pipefail
 
 # Check jq dependency
 if ! command -v jq &>/dev/null; then
